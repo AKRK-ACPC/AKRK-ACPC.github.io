@@ -1,1 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quarry Reward Chance</title>
+    /* v1 */
+    <link href="https://fonts.googleapis.com/css?family=Julius+Sans+One|Overlock:400,700|Overpass:400,700" rel="stylesheet">
+    <style type="text/css">
+      
+body,html{
 
+  margin:0;
+  padding:0;
+  height:100%;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#0A5F65 url("https://i.imgur.com/brjpO9j.png") center center repeat;
+  background-size:60px 60px;
+}
+
+#quarry_odds{
+  background:linear-gradient(0deg, transparent 0px, #F2D3A9 1px, #F2D3A9 2px, transparent 3px), linear-gradient(90deg, transparent 0px, #F2D3A9 1px, #F2D3A9 2px, transparent 3px);
+  background-size:40px 40px;
+  background-color:#FDDFAF;
+  background-position:top left;
+  font-family:'Overlock', sans-serif;
+  min-height:100%;
+  max-width:600px;
+  flex-grow:1;
+}
+
+#titlebar{
+  background:#59BBA6;
+  display:block;
+  font-size:18px;
+  font-weight:700;
+  text-align:center;
+  width:100%;
+  max-width:600px;
+  padding-top:15px;
+  padding-bottom:15px;
+  color:#F8F5E3;
+}
+#tooltip{
+  background:#F0E7CF;
+  color:#494949;
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  text-align:center;
+  width:100%;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+#cyclelist{
+  display:flex;
+  align-items:stretch;
+  justify-content:stretch;
+  padding-bottom:20px;
+  padding-top:20px;
+  max-width:600px;
+  padding-left:15px;
+  padding-right:15px;
+  background:linear-gradient(0deg, transparent 0px, #DCAB8A 1px, #DCAB8A 2px, transparent 3px), linear-gradient(90deg, transparent 0px, #DCAB8A 1px, #DCAB8A 2px, transparent 3px);
+  background-position:top left;
+  background-size:40px 40px;
+  background-color:#E9B794;
+}
+
+.cycle{
+  flex-grow:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+}
+.cycle span{
+  text-align:center;
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+  margin:3px;
+  color:#111; 
+}
+.cycle span:last-child{
+  background:#56BBA7;
+  width:50px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:3px;
+  box-shadow:0px 2px 0px rgba(0,0,0,0.2);
+  font-family:'Julias Sans One', sans-serif;
+  font-size:12px;
+  color:#FFF;
+  background-image:linear-gradient(
+    0deg, 
+    rgba(233, 70, 97, calc(1 - (var(--weight) / var(--total-weight)))) 0px, 
+    rgba(233, 70, 97, calc(1 - (var(--weight) / var(--total-weight)))) 0px
+  );
+}
+
+.quarry_reward{
+  display:inline-block;
+  border-radius:100%;
+  width:40px;
+  height:40px;
+  margin:10px;
+  position:relative;
+  margin-bottom:40px;
+}
+
+.quarry_reward::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:40px;
+  height:40px;
+  background-size:32px 32px;
+  background-position:center center;
+  background-repeat:no-repeat;
+  z-index:99;
+}
+
+.quarry_reward.cool_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_coo00.png")}
+.quarry_reward.cute_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_fan00.png")}
+.quarry_reward.natural_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_ntl00.png")}
+.quarry_reward.sporty_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_spt00.png")}
+.quarry_reward.rustic_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_cnt00.png")}
+
+.quarry_reward.wood::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_key00.png")}
+.quarry_reward.steel::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_katikati00.png")}
+.quarry_reward.cotton::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_huwahuwa00.png")}
+.quarry_reward.paper::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_perapera00.png")}
+.quarry_reward.preserves::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_mogumogu00.png")}
+
+.quarry_reward.bells::before{background-image:url("https://akrk-acpc.github.io/common_assets/icn_069.png")}
+.quarry_reward.event_material::before{background-image:url("https://akrk-acpc.github.io/common_assets/event_material_set_winter.png")}
+
+.quarry_reward.sparkles::after{
+  background-color:#FEC848;
+}
+
+.quarry_reward::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:40px;
+  height:40px;
+  background-color:#FAF7E5;
+  border-radius:100% 100% 100% 5px;
+  transform:rotate(-45deg);
+  box-shadow:-2px 2px 0px rgba(0,0,0,0.3);
+
+}
+.chance_text{
+  position:absolute;
+  top:53px;
+  left:5px;
+  width:30px;
+  height:16px;
+  background:linear-gradient(
+    0deg, 
+    rgba(70,70,70, calc(1 - (var(--weight) / var(--max-weight)))) 0px, 
+    rgba(70,70,70, calc(1 - (var(--weight) / var(--max-weight)))) 0px
+  );
+  background-color:#F27F13;
+  overflow:hidden;
+  font-size:9px;
+  font-weight:bold;
+  letter-spacing:1px;
+  font-family:'Julius Sans One',sans-serif;
+  color:#FFF;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:3px;
+  box-shadow:0px 2px 0px rgba(0,0,0,0.2);
+}
+
+.quarry_reward:not(.enabled){
+  opacity:0.4;
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="quarry_odds">
+
+<span id="titlebar">Chance of your desired Quarry Reward appearing within X cycles</span>
+<span id="tooltip">Click the quarry reward icons below to mark them as "desired".<br>The odds show chance of at least one appearing within X cycles. (8 = full day)</span>
+<div id="cyclelist">
+  <span class="cycle">
+    <span>1 Cycle</span>
+    <span id="cycle_1_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>2 Cycles</span>
+    <span id="cycle_2_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>3 Cycles</span>
+    <span id="cycle_3_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>4 Cycles</span>
+    <span id="cycle_4_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>5 Cycles</span>
+    <span id="cycle_5_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>6 Cycles</span>
+    <span id="cycle_6_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>7 Cycles</span>
+    <span id="cycle_7_chance" style="--weight:0">0%</span>
+  </span>
+  <span class="cycle">
+    <span>8 Cycles</span>
+    <span id="cycle_8_chance" style="--weight:0">0%</span>
+  </span>
+</div>
+</main>
+    <script>
+      // "Should I just take this non-sparkly essence quarry?""
+//
+// quick and dirty quarry odds list by AKRK,
+// using datamined info from bluesun in ACPC Discord.
+//
+///////////////////////////////////////////////////////////
+// If it is NOT currently an event, change this to false:
+
+var is_event = false;
+
+// and then hit "Run" in the top left of this page.
+// Event materials will no longer be listed.
+///////////////////////////////////////////////////////////
+
+
+
+var weight = {
+	materials:{
+		ordinary:12,
+		sparkles:4
+	},
+	essence:{
+		ordinary:45,
+		sparkles:15
+	},
+	bells:{
+		ordinary:60,
+		sparkles:20
+	},
+	eventmat:{
+		sparkles:90
+	}
+};
+
+
+var reward_types = [
+	// name, weight type
+	["cool_essence", weight.essence],
+	["cute_essence", weight.essence],
+	["natural_essence", weight.essence],
+	["sporty_essence", weight.essence],
+	["rustic_essence", weight.essence],
+	["wood", weight.materials],
+	["steel", weight.materials],
+	["cotton", weight.materials],
+	["paper", weight.materials],
+	["preserves", weight.materials],
+	["bells", weight.bells]
+];
+
+if(is_event == true){
+	reward_types.unshift(["event_material", weight.eventmat]);
+}
+
+
+
+// populate rewards list
+	var quarry_total_weight = 0;
+	var quarry_rewards = [];
+	var max_weight = 0;
+
+	for(let type of reward_types){
+		for(let weight in type[1]){
+			quarry_total_weight += type[1][weight];
+			quarry_rewards.push([
+				type[0],
+				weight,
+				type[1][weight]
+			]);
+      if(type[1][weight] > max_weight){
+      	max_weight = type[1][weight];
+      }
+		}
+	}
+
+
+
+// render html
+	document.body.setAttribute('style','--max-weight:'+max_weight+'; --total-weight:'+quarry_total_weight)
+	var output_html = "";
+
+	for(let reward of quarry_rewards){
+		output_html += '<span class="quarry_reward '+reward[0]+' '+reward[1]+'" data-weight="'+reward[2]+'"><span class="chance_text" style="--weight:'+reward[2]+'">'+(Math.round(reward[2]/quarry_total_weight*1000)/10)+'%</span></span>';
+	}
+
+	document.getElementById("quarry_odds").innerHTML += output_html;
+
+// add listeners
+	
+  for(let reward of document.querySelectorAll(".quarry_reward")){
+  	reward.addEventListener("click",function(e){
+    	this.classList.toggle("enabled");
+      updateChance();
+    });
+  }
+
+// global chance updates
+
+	function updateChance(){
+  	var enabled_weight = 0;
+    for(let reward of document.querySelectorAll(".quarry_reward.enabled")){
+    	enabled_weight += parseInt(reward.dataset.weight);
+    }
+    var single_chance = enabled_weight/quarry_total_weight;
+    var chance = 0;
+    for(i = 1; i <= 8; i++){
+    	chance += (1-chance)*single_chance;
+      document.getElementById("cycle_"+i+"_chance").setAttribute("style","--weight:"+Math.round(chance*quarry_total_weight));
+    	document.getElementById("cycle_"+i+"_chance").innerText = (Math.round(chance*1000)/10)+"%";
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+  </body>
+</html>
