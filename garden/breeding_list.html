@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ACPC Flower Breeding Pair List/Search</title>
+</head>
+<body>
+<h1>This is a preview. It is not finished.</h1><br>
+<span>The code's a bit of a mess. It will have additional search options. I'm pretty busy right now and potentially won't be able to add polish for a few days.<br><br> Clean results = every color returned only has one gene pair possible, so all crossbreeding results are known.<br><br>0depth = storebought, 1depth = breed a storebought for this, 2depth = breed a 1-depth for this <br><br>-AKRK</span><br>
+<br>
+<label>Plant: <select id="plant_select"><option value="-">-</option></select></label>
+<label>Require clean results:<input type="checkbox" id="require_clean"></label>
+<label>Max depth:<select id="max_depth"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option></select></label>
+<label>Minimum different colors:<select id="min_diff_colors"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+<div id="breedpair_results"></div>
+
+
+<script>
+		document.getElementById("max_depth").addEventListener("change",function(e){
+			filter.max_depth = parseInt(this.value);
+			loadResults();
+		});
+
+		document.getElementById("require_clean").addEventListener("change",function(e){
+			filter.require_clean = this.checked;
+			loadResults();
+		});
+
+		document.getElementById("min_diff_colors").addEventListener("change",function(e){
+			filter.min_different_color_results = parseInt(this.value);
+			loadResults();
+		});
+
+		/*
+	var filter = {
+		allowed_parent:new Set(),
+		max_depth:2,
+		min_different_color_results:3,
+		require_clean:false,
+		require_color:false,
+		sort_color:"red-blue"
+	};
+	*/
+// Game Data
+
+	var GameDB = {
+	    "Seed": [
+	        {
+	            "ID": 10001,
+	            "_Key": "red pansy seeds",
+	            "_PlantKey": "red pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10002,
+	            "_Key": "yellow pansy seeds",
+	            "_PlantKey": "yellow pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10003,
+	            "_Key": "orange pansy seeds",
+	            "_PlantKey": "orange pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10004,
+	            "_Key": "white pansy seeds",
+	            "_PlantKey": "white pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10005,
+	            "_Key": "blue pansy seeds",
+	            "_PlantKey": "blue pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10006,
+	            "_Key": "purple pansy seeds",
+	            "_PlantKey": "purple pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 100,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10007,
+	            "_Key": "yellow-blue pansy seeds",
+	            "_PlantKey": "yellow-blue pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10008,
+	            "_Key": "red-blue pansy seeds",
+	            "_PlantKey": "red-blue pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10009,
+	            "_Key": "coral pansy seeds",
+	            "_PlantKey": "coral pansies",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10010,
+	            "_Key": "red tulip seeds",
+	            "_PlantKey": "red tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10011,
+	            "_Key": "white tulip seeds",
+	            "_PlantKey": "white tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10012,
+	            "_Key": "yellow tulip seeds",
+	            "_PlantKey": "yellow tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10013,
+	            "_Key": "pink tulip seeds",
+	            "_PlantKey": "pink tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10014,
+	            "_Key": "purple tulip seeds",
+	            "_PlantKey": "purple tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10015,
+	            "_Key": "black tulip seeds",
+	            "_PlantKey": "black tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10016,
+	            "_Key": "orange tulip seeds",
+	            "_PlantKey": "orange tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10017,
+	            "_Key": "blue tulip seeds",
+	            "_PlantKey": "blue tulips",
+	            "_PlantType": 1,
+	            "_BellRate": 100,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10018,
+	            "_Key": "blue dahlia seeds",
+	            "_PlantKey": "blue dahlias (0)",
+	            "_PlantType": 2,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10019,
+	            "_Key": "red dahlia seeds",
+	            "_PlantKey": "red dahlias",
+	            "_PlantType": 2,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10020,
+	            "_Key": "white dahlia seeds",
+	            "_PlantKey": "white dahlias",
+	            "_PlantType": 2,
+	            "_BellRate": 60,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10021,
+	            "_Key": "blue dahlia seeds+",
+	            "_PlantKey": "blue dahlias (3)",
+	            "_PlantType": 2,
+	            "_BellRate": 40,
+	            "_CanUseFrom": "1899-12-30 00:00:00 UTC",
+	            "_CatalogSubCategory": 1100001,
+	            "_TermID": 1
+	        }
+	    ],
+	    "Plant": [
+	        {
+	            "ID": 10001,
+	            "_Key": "red pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 1,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 9,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10002,
+	            "_Key": "yellow pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 2,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 9,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10003,
+	            "_Key": "orange pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 3,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10004,
+	            "_Key": "white pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 4,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10005,
+	            "_Key": "blue pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 5,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10006,
+	            "_Key": "purple pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 100,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 9,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 3,
+	            "_BreedPosibility": 0.800000011921,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10007,
+	            "_Key": "yellow-blue pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 6,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10008,
+	            "_Key": "red-blue pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 7,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.800000011921,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10009,
+	            "_Key": "coral pansies",
+	            "_PlantKey": "pansy",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 8,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10010,
+	            "_Key": "red tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 10,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 9,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10011,
+	            "_Key": "white tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 13,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10012,
+	            "_Key": "yellow tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 14,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10013,
+	            "_Key": "pink tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 15,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10014,
+	            "_Key": "purple tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 16,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.800000011921,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10015,
+	            "_Key": "black tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 17,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10016,
+	            "_Key": "orange tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 12,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 9,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10017,
+	            "_Key": "blue tulips",
+	            "_PlantKey": "tulip",
+	            "_PlantType": 1,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 100,
+	            "_HarvestCrop": 32,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 18,
+	            "_CatalogList": 1100003,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 10,
+	            "_Rarity": 3,
+	            "_BreedPosibility": 0.899999976158,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10018,
+	            "_Key": "blue dahlias (0)",
+	            "_PlantKey": "dahlia",
+	            "_PlantType": 2,
+	            "_SecToComplete": 10800,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 36,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 101,
+	            "_CatalogList": 1100003,
+	            "_CampaignID": 2050,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 5,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 1,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10019,
+	            "_Key": "red dahlias",
+	            "_PlantKey": "dahlia",
+	            "_PlantType": 2,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 36,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 102,
+	            "_CatalogList": 1100003,
+	            "_CampaignID": 2050,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 5,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 1,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10020,
+	            "_Key": "white dahlias",
+	            "_PlantKey": "dahlia",
+	            "_PlantType": 2,
+	            "_SecToComplete": 14400,
+	            "_BellRate": 60,
+	            "_HarvestCrop": 36,
+	            "_IsOnCatalog": 1,
+	            "_CatalogNo": 103,
+	            "_CatalogList": 1100003,
+	            "_CampaignID": 2050,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 5,
+	            "_Rarity": 2,
+	            "_BreedPosibility": 1,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10021,
+	            "_Key": "blue dahlias (3)",
+	            "_PlantKey": "dahlia",
+	            "_PlantType": 2,
+	            "_SecToComplete": 30,
+	            "_BellRate": 40,
+	            "_HarvestCrop": 36,
+	            "_CatalogNo": 104,
+	            "_CatalogList": 1100003,
+	            "_CampaignID": 2050,
+	            "_CatalogSubCategory": 1100002,
+	            "_Route": 5,
+	            "_Rarity": 1,
+	            "_BreedPosibility": 1,
+	            "_TermID": 1
+	        }
+	    ],
+	    "Shop": [
+	        {
+	            "ID": 10002,
+	            "_SeedKey": "red pansy seeds",
+	            "_Gene1Key": "red pansy gene",
+	            "_Gene2Key": "white pansy gene",
+	            "_BellRate": 80,
+	            "_BeginAt": "2017-11-21 06:00:00 UTC",
+	            "_EndAt": "9999-01-05 06:00:00 UTC",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10003,
+	            "_SeedKey": "yellow pansy seeds",
+	            "_Gene1Key": "yellow pansy gene",
+	            "_Gene2Key": "white pansy gene",
+	            "_BellRate": 80,
+	            "_BeginAt": "2017-11-21 06:00:00 UTC",
+	            "_EndAt": "9999-01-05 06:00:00 UTC",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10004,
+	            "_SeedKey": "red tulip seeds",
+	            "_Gene1Key": "red tulip gene",
+	            "_Gene2Key": "yellow tulip gene",
+	            "_BellRate": 80,
+	            "_BeginAt": "2017-11-21 06:00:00 UTC",
+	            "_EndAt": "9999-01-05 06:00:00 UTC",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10005,
+	            "_SeedKey": "orange tulip seeds",
+	            "_Gene1Key": "orange tulip gene",
+	            "_Gene2Key": "white tulip gene",
+	            "_BellRate": 80,
+	            "_BeginAt": "2017-11-21 06:00:00 UTC",
+	            "_EndAt": "9999-01-05 06:00:00 UTC",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10006,
+	            "_SeedKey": "blue dahlia seeds",
+	            "_BellRate": 80,
+	            "_BeginAt": "2018-01-11 06:00:00 UTC",
+	            "_EndAt": "2018-01-22 06:00:00 UTC",
+	            "_TermID": 1,
+	            "_Category": 1
+	        }
+	    ],
+	    "FlowerGene": [
+	        {
+	            "ID": 10003,
+	            "_GeneKey": "white pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 50,
+	            "_Dominance": 10,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10005,
+	            "_GeneKey": "purple pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 50,
+	            "_Dominance": 20,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10006,
+	            "_GeneKey": "coral pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 80,
+	            "_Dominance": 30,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10001,
+	            "_GeneKey": "red pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 50,
+	            "_Dominance": 40,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10002,
+	            "_GeneKey": "yellow pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 70,
+	            "_Dominance": 40,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10004,
+	            "_GeneKey": "blue pansy gene",
+	            "_FlowerKey": "pansy",
+	            "_InheritPriority": 50,
+	            "_Dominance": 40,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10014,
+	            "_GeneKey": "blue tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 10,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10008,
+	            "_GeneKey": "white tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 20,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10011,
+	            "_GeneKey": "purple tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 30,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10010,
+	            "_GeneKey": "pink tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 40,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10012,
+	            "_GeneKey": "black tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 50,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10013,
+	            "_GeneKey": "orange tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 60,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10009,
+	            "_GeneKey": "yellow tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 70,
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10007,
+	            "_GeneKey": "red tulip gene",
+	            "_FlowerKey": "tulip",
+	            "_InheritPriority": 50,
+	            "_Dominance": 80,
+	            "_TermID": 1
+	        }
+	    ],
+	    "FlowerGeneColor": [
+	        {
+	            "ID": 10001,
+	            "_PrimaryKey": "red pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "red pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "red pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10002,
+	            "_PrimaryKey": "yellow pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "yellow pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "yellow pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10003,
+	            "_PrimaryKey": "red-yellow pansy genes",
+	            "_SeedKey": 120,
+	            "_PlantKey": "orange pansies",
+	            "_FlowerType": "pansy",
+	            "_RecordType": 1,
+	            "_GeneKey1": "red pansy gene",
+	            "_GeneKey2": "yellow pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10004,
+	            "_PrimaryKey": "white pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "white pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "white pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10005,
+	            "_PrimaryKey": "blue pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "blue pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "blue pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10006,
+	            "_PrimaryKey": "purple pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "purple pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "purple pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10007,
+	            "_PrimaryKey": "yellow-blue pansy genes",
+	            "_SeedKey": 120,
+	            "_PlantKey": "yellow-blue pansies",
+	            "_FlowerType": "pansy",
+	            "_RecordType": 1,
+	            "_GeneKey1": "yellow pansy gene",
+	            "_GeneKey2": "blue pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10008,
+	            "_PrimaryKey": "red-blue pansy genes",
+	            "_SeedKey": 120,
+	            "_PlantKey": "red-blue pansies",
+	            "_FlowerType": "pansy",
+	            "_RecordType": 1,
+	            "_GeneKey1": "red pansy gene",
+	            "_GeneKey2": "blue pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10009,
+	            "_PrimaryKey": "coral pansy gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "coral pansies",
+	            "_FlowerType": "pansy",
+	            "_GeneKey1": "coral pansy gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10010,
+	            "_PrimaryKey": "red tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "red tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "red tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10011,
+	            "_PrimaryKey": "white tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "white tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "white tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10012,
+	            "_PrimaryKey": "yellow tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "yellow tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "yellow tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10013,
+	            "_PrimaryKey": "pink tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "pink tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "pink tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10014,
+	            "_PrimaryKey": "purple tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "purple tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "purple tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10015,
+	            "_PrimaryKey": "black tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "black tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "black tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10016,
+	            "_PrimaryKey": "orange tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "orange tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "orange tulip gene",
+	            "_TermID": 1
+	        },
+	        {
+	            "ID": 10017,
+	            "_PrimaryKey": "blue tulip gene",
+	            "_SeedKey": 100,
+	            "_PlantKey": "blue tulips",
+	            "_FlowerType": "tulip",
+	            "_GeneKey1": "blue tulip gene",
+	            "_TermID": 1
+	        }
+	    ],
+	    "FlowerMutations": [
+	        {
+	            "ID": 10001,
+	            "_Key": "pansy mutation 1",
+	            "_FlowerKey": "pansy",
+	            "_Gene1Key": "yellow pansy gene",
+	            "_Gene2Key": "yellow pansy gene",
+	            "_FinalGene1Key": "coral pansy gene",
+	            "_FinalGene2Key": "white pansy gene",
+	            "_MutationProbability": 70
+	        },
+	        {
+	            "ID": 10002,
+	            "_Key": "pansy mutation 2",
+	            "_FlowerKey": "pansy",
+	            "_Gene1Key": "coral pansy gene",
+	            "_Gene2Key": "coral pansy gene",
+	            "_FinalGene1Key": "blue pansy gene",
+	            "_FinalGene2Key": "white pansy gene",
+	            "_MutationProbability": 60
+	        },
+	        {
+	            "ID": 10003,
+	            "_Key": "pansy mutation 3",
+	            "_FlowerKey": "pansy",
+	            "_Gene1Key": "red pansy gene",
+	            "_Gene2Key": "blue pansy gene",
+	            "_FinalGene1Key": "purple pansy gene",
+	            "_FinalGene2Key": "white pansy gene",
+	            "_MutationProbability": 30
+	        },
+	        {
+	            "ID": 10004,
+	            "_Key": "tulip mutation 1",
+	            "_FlowerKey": "tulip",
+	            "_Gene1Key": "red tulip gene",
+	            "_Gene2Key": "white tulip gene",
+	            "_FinalGene1Key": "pink tulip gene",
+	            "_FinalGene2Key": "white tulip gene",
+	            "_MutationProbability": 70
+	        },
+	        {
+	            "ID": 10005,
+	            "_Key": "tulip mutation 2",
+	            "_FlowerKey": "tulip",
+	            "_Gene1Key": "white tulip gene",
+	            "_Gene2Key": "white tulip gene",
+	            "_FinalGene1Key": "black tulip gene",
+	            "_FinalGene2Key": "white tulip gene",
+	            "_MutationProbability": 70
+	        },
+	        {
+	            "ID": 10006,
+	            "_Key": "tulip mutation 3",
+	            "_FlowerKey": "tulip",
+	            "_Gene1Key": "black tulip gene",
+	            "_Gene2Key": "pink tulip gene",
+	            "_FinalGene1Key": "purple tulip gene",
+	            "_FinalGene2Key": "blue tulip gene",
+	            "_MutationProbability": 70
+	        }
+	    ],
+	    "FlowerMutationCorrection": [
+	        {
+	            "ID": 10001,
+	            "_Key": "pansy mutation 1 correction 1",
+	            "_MutationKey": "pansy mutation 1",
+	            "_ConditionGene": "yellow pansy gene",
+	            "_ConditionNums": [5,10,20],
+	            "_Corrections": [3,6,15]
+	        },
+	        {
+	            "ID": 10002,
+	            "_Key": "pansy mutation 2 correction 1",
+	            "_MutationKey": "pansy mutation 2",
+	            "_ConditionGene": "coral pansy gene",
+	            "_ConditionNums": [5,10,20],
+	            "_Corrections": [5,10,30]
+	        },
+	        {
+	            "ID": 10003,
+	            "_Key": "pansy mutation 3 correction 1",
+	            "_MutationKey": "pansy mutation 3",
+	            "_ConditionGene": "red pansy gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [1,3,8]
+	        },
+	        {
+	            "ID": 10004,
+	            "_Key": "pansy mutation 3 correction 2",
+	            "_MutationKey": "pansy mutation 3",
+	            "_ConditionGene": "blue pansy gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [3,6,15]
+	        },
+	        {
+	            "ID": 10005,
+	            "_Key": "tulip mutation 1 correction 1",
+	            "_MutationKey": "tulip mutation 1",
+	            "_ConditionGene": "red tulip gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [1,3,8]
+	        },
+	        {
+	            "ID": 10006,
+	            "_Key": "tulip mutation 1 correction 2",
+	            "_MutationKey": "tulip mutation 1",
+	            "_ConditionGene": "white tulip gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [1,3,8]
+	        },
+	        {
+	            "ID": 10007,
+	            "_Key": "tulip mutation 2 correction 1",
+	            "_MutationKey": "tulip mutation 2",
+	            "_ConditionGene": "white tulip gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [3,6,15]
+	        },
+	        {
+	            "ID": 10008,
+	            "_Key": "tulip mutation 3 correction 1",
+	            "_MutationKey": "tulip mutation 3",
+	            "_ConditionGene": "black tulip gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [3,6,15]
+	        },
+	        {
+	            "ID": 10009,
+	            "_Key": "tulip mutation 3 correction 2",
+	            "_MutationKey": "tulip mutation 3",
+	            "_ConditionGene": "pink tulip gene",
+	            "_ConditionNums": [5,10,15],
+	            "_Corrections": [3,6,15]
+	        }
+	    ]
+	}
+
+// Classes
+
+	class Flower{
+		constructor(plant_object){
+			this.plant = plant_object._PlantKey;
+			this.name = plant_object._Key;
+			this.color = this.name.substr(0, this.name.indexOf(" "));
+
+			this.bells = plant_object._BellRate;
+
+			this.growth_seconds = plant_object._SecToComplete;
+			this.breed_success_rate = plant_object._BreedPosibility;
+
+			find_seed_name:{
+				for(let seed of GameDB.Seed){
+					if(seed._PlantKey === this.name){
+						this.seed_name = seed._Key;
+						this.seed_bells = seed._BellRate;
+						break find_seed_name;
+					}
+				}
+				this.seed_name = false;
+				this.seed_bells = false;
+			}
+
+			this.genepair_list = new Set();
+		}
+	}
+
+	class FlowerGene{
+		constructor(fg_object){
+			this.plant = fg_object._FlowerKey;
+			this.name = fg_object._GeneKey;
+			this.color = this.name.substr(0, this.name.indexOf(" "));
+
+			this.dominance = fg_object._Dominance;
+			this.weight = fg_object._InheritPriority;
+
+			this.id = fg_object.ID;
+		}
+	}
+
+	class FlowerGenePair{
+		constructor(plant, gene1, gene2, flower){
+			this.genes = [gene1, gene2];
+			this.gene1 = gene1;
+			this.gene2 = gene2;
+
+			this.plant = gene1.plant;
+			this.flower = flower;
+			this.color = flower.color;
+
+			this.total_weight = gene1.weight + gene2.weight;
+
+			this.depth = null;
+		}
+	}
+
+	class FlowerMutation{
+		constructor(original, result, chance){
+			this.original_genepair = original;
+			this.mutation_genepair = result;
+			this.mutation_chance = chance/100; // expects value of 70 for 70% chance
+		}
+	}
+
+
+	class FlowerBreedPair{
+		constructor(genepair1, genepair2){
+			this.pairs = [genepair1, genepair2];
+			this.pair1 = genepair1;
+			this.pair2 = genepair2;
+			this.genepair_results = new Map();
+			this.flower_results = new Map();
+
+			var plant = genepair1.plant;
+			// ASSUMPTION: The success/failure rate is equal to the lowest of the two parents' _BreedPosibility
+			var success_rate = Math.min(genepair1.flower.breed_success_rate, genepair2.flower.breed_success_rate);
+
+			this.genepair_results.set("destroyed", 1-success_rate);
+			this.flower_results.set("destroyed", 1-success_rate);
+
+			this.clean_results = true;
+
+			for(let i of [[0,0],[0,1],[1,0],[1,1]]){
+
+				var pair1gene = genepair1.genes[i[0]];
+				var pair2gene = genepair2.genes[i[1]];
+
+				var result_genepair = DB[plant].genepair_lookup.get(pair1gene).get(pair2gene);
+
+				// ASSUMPTION: _InheritPriority value is a "weight" value
+				var local_chance = success_rate*(pair1gene.weight/genepair1.total_weight)*(pair2gene.weight/genepair2.total_weight);
+
+				if(DB[plant].mutation.has(result_genepair)){
+					var mutation_chance = local_chance * DB[plant].mutation.get(result_genepair).mutation_chance;
+					local_chance = local_chance - mutation_chance;
+
+					var mutation_result = DB[plant].mutation.get(result_genepair).mutation_genepair;
+
+
+					if(!this.genepair_results.has(mutation_result)){
+						this.genepair_results.set(mutation_result, mutation_chance);
+					}else{
+						this.genepair_results.set(mutation_result, mutation_chance + this.genepair_results.get(mutation_result));
+					}
+				}
+
+
+				if(!this.genepair_results.has(result_genepair)){
+					this.genepair_results.set(result_genepair, local_chance);
+				}else{
+					this.genepair_results.set(result_genepair, local_chance + this.genepair_results.get(result_genepair));
+				}
+
+			}
+
+			for(let [result, chance] of this.genepair_results){
+				if(typeof result !== "string"){
+					if(!this.flower_results.has(result.flower)){
+						this.flower_results.set( result.flower, chance);
+					}else{
+						this.flower_results.set( result.flower, this.flower_results.get(result.flower) + chance);
+						this.clean_results = false;
+					}
+				}
+			}
+		}
+	}
+
+// Helper Functions
+
+// Parse/Reformat Game Data
+
+	var DB = {};
+
+	function populateDB(){
+
+		// Plants; Flowers
+
+			for(let plantvariant of GameDB.Plant){
+				// ASSUMPTION: Plant._PlantType value indicates whether breeding is possible.
+				// REASON: Pansies and Tulips are set to 1. Dahlias is set to 2. Plant._Route has additional meaning beyond breeding potential.
+				//
+				// only add to local DB if breeding is possible.
+					if(plantvariant._PlantType === 1){
+
+						// (_PlantKey == pansy, tulip, dahlia...)
+							var pkey = plantvariant._PlantKey;
+
+						// create DB category for _PlantKey if doesn't exist
+							if(!DB.hasOwnProperty(pkey)){
+								DB[pkey] = {
+									flower:{},
+									flower_color_lookup: new Map(),
+									gene:{},
+									gene_color_lookup: new Map(),
+									shop: new Map(),
+									genepair: new Set(),
+									genepair_lookup: new Map(),
+									mutation: new Map(),
+									breedpair: new Set(),
+									breedpair_lookup: new Map()
+								};
+							}
+
+						// add entry for this plant variant
+							var flower = new Flower(plantvariant);
+							DB[pkey].flower[plantvariant._Key] = flower;
+							DB[pkey].flower_color_lookup.set(flower.color, flower);
+
+					}
+
+			}
+
+		// Genes
+
+			for(let flowergene of GameDB.FlowerGene){
+				// add entry for this gene
+					var gene = new FlowerGene(flowergene);
+					DB[flowergene._FlowerKey].gene[flowergene._GeneKey] = gene;
+					DB[flowergene._FlowerKey].gene_color_lookup.set(gene.color, gene);
+			}
+
+		// Gene Pairs
+
+			for(let fgcolor of GameDB.FlowerGeneColor){
+
+				var plant = fgcolor._FlowerType;
+				var flower = DB[plant].flower[fgcolor._PlantKey];
+				// ASSUMPTION: _RecordType == 1 always means a consistent pair of two exact genes.
+				if(fgcolor.hasOwnProperty("_RecordType") && fgcolor._RecordType === 1){
+
+					var tempgene1 = DB[plant].gene[fgcolor._GeneKey1];
+					var tempgene2 = DB[plant].gene[fgcolor._GeneKey2];
+					// sort genes by ID, lowest gene id first
+					if(tempgene1.ID <= tempgene2.ID){
+						var gene1 = tempgene1;
+						var gene2 = tempgene2;
+					}else{
+						var gene1 = tempgene2;
+						var gene2 = tempgene1;
+					}
+
+					for(let gene of [gene1, gene2]){
+						if(!DB[plant].genepair_lookup.has(gene)){
+							DB[plant].genepair_lookup.set(gene, new Map());
+						}
+					}
+
+					var pair = new FlowerGenePair(plant, gene1, gene2, flower);
+
+					DB[plant].genepair.add(pair);
+					DB[plant].genepair_lookup.get(gene1).set(gene2, pair);
+					DB[plant].genepair_lookup.get(gene2).set(gene1, pair);
+					DB[plant].flower[flower.name].genepair_list.add(pair);
+
+				}else{
+					// standard gene dominance
+
+					var gene1 = DB[plant].gene[fgcolor._GeneKey1];
+
+					for(let gene2 in DB[fgcolor._FlowerType].gene){
+						gene2 = DB[plant].gene[gene2];
+
+						// only assign if dominance is ordered correctly or the genes are the same
+						if(gene1.dominance > gene2.dominance || gene1 === gene2){
+
+							for(let gene of [gene1, gene2]){
+								if(!DB[plant].genepair_lookup.has(gene)){
+									DB[plant].genepair_lookup.set(gene, new Map());
+								}
+							}
+
+							var pair = new FlowerGenePair(plant, gene1, gene2, flower);
+							
+							DB[plant].genepair.add(pair);
+							DB[plant].genepair_lookup.get(gene1).set(gene2, pair);
+							DB[plant].genepair_lookup.get(gene2).set(gene1, pair);
+							DB[plant].flower[flower.name].genepair_list.add(pair);
+						}
+					}
+
+				}
+			}
+
+		// Shop
+
+			for(let storeseed of GameDB.Shop){
+
+				// ASSUMPTION: _Category marks seasonal items
+				if(!storeseed.hasOwnProperty("_Category")){
+					// identify seed
+					identify_plant:{
+
+						for(let plant in DB){
+							for(let flower in DB[plant].flower){
+
+								if(storeseed._SeedKey === DB[plant].flower[flower].seed_name){
+									DB[plant].shop.set(
+										DB[plant].genepair_lookup.get(DB[plant].gene[storeseed._Gene1Key]).get(DB[plant].gene[storeseed._Gene2Key]), 
+									storeseed._BellRate);
+									break identify_plant;
+								}
+							}
+						}
+					}
+
+				}
+			}
+
+		// Mutations
+
+			for(let fmutation of GameDB.FlowerMutations){
+				var plant = fmutation._FlowerKey;
+
+				var original = DB[plant].genepair_lookup.get(
+					DB[plant].gene[fmutation._Gene1Key]
+				).get(
+					DB[plant].gene[fmutation._Gene2Key]
+				);
+
+				var result = DB[plant].genepair_lookup.get(
+					DB[plant].gene[fmutation._FinalGene1Key]
+				).get(
+					DB[plant].gene[fmutation._FinalGene2Key]
+				);
+
+				DB[plant].mutation.set(original, new FlowerMutation(original, result, fmutation._MutationProbability));
+			}
+
+		// BreedMaps
+
+			for(let plant in DB){
+				var remaining_pairs = new Set([...DB[plant].genepair]);
+
+				for(let pair1 of DB[plant].genepair){
+
+					for(let pair2 of remaining_pairs){
+						var fbpair = new FlowerBreedPair(pair1, pair2);
+						DB[plant].breedpair.add(fbpair);
+
+
+						for(let pair of [pair1, pair2]){
+							if(!DB[plant].breedpair_lookup.has(pair)){
+								DB[plant].breedpair_lookup.set(pair, new Map());
+							}
+						}
+
+						DB[plant].breedpair_lookup.get(pair1).set(pair2, fbpair);
+						DB[plant].breedpair_lookup.get(pair2).set(pair1, fbpair);
+					}
+
+					// remove after so that we pair it against itself
+					remaining_pairs.delete(pair1);
+				} 
+			}
+
+	// Breed Depths
+
+		for(let plant in DB){
+
+			var unassigned = new Set([...DB[plant].genepair]);
+			var batch = new Set();
+
+			for(let [shopgenepair, price] of DB[plant].shop){
+				shopgenepair.depth = 0;
+				batch.add(shopgenepair);
+				unassigned.delete(shopgenepair);
+
+			}
+
+			var max_depth = 10;
+			var depth = 1;
+
+			while(unassigned.size > 0 && depth <= max_depth){
+				var new_batch = new Set();
+
+				for(let gp1 of batch){
+					for(let gp2 of DB[plant].genepair){
+						for(let [result, chance] of DB[plant].breedpair_lookup.get(gp1).get(gp2).genepair_results){
+							if(typeof result !== "string" && unassigned.has(result)){
+								result.depth = depth;
+								new_batch.add(result);
+								unassigned.delete(result);
+							}
+						}
+					}
+				}
+
+				depth++;
+
+				batch = new_batch;
+
+			}
+
+		}
+	}
+
+	populateDB();
+
+// Environment Variables
+
+	var activeplant = "-";
+
+// Helper Funcs
+
+	// https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
+	function namedColorToColor(color){
+		var ctx = document.createElement('canvas').getContext('2d');
+		ctx.fillStyle = color;
+		if(ctx.fillStyle === "#000000" && color.toLowerCase() !== "black"){
+			return false;
+		}else{
+			return ctx.fillStyle;
+		}
+	}
+
+	function flower(g){
+		// expects string
+		if(g.indexOf(" ") === -1){
+			// color
+			return DB[activeplant].flower_color_lookup.get(g);
+		}else{
+			// flower name
+			return DB[activeplant].flower[g];
+		}
+	}
+
+	function gene(g){
+		// expects string
+		if(g.indexOf("gene") === -1){
+			// color
+			return DB[activeplant].gene_color_lookup.get(g);
+		}else{
+			// gene name
+			return DB[activeplant].gene[g];
+		}
+	}
+
+	function genepair(a, b){
+		// expects strings or FlowerGene objects
+		if(typeof a === "string"){
+			a = gene(a);
+		}
+		if(typeof b === "string"){
+			b = gene(b);
+		}
+		return DB[activeplant].genepair_lookup.get(a).get(b);
+	}
+
+	function breedpair(a, b){
+		// expects arrays or FlowerGenePair objects
+		if(Array.isArray(a)){
+			a = genepair(a[0],a[1]);
+		}
+		if(Array.isArray(b)){
+			b = genepair(b[0],b[1]);
+		}
+		return DB[activeplant].breedpair_lookup.get(a).get(b);
+	}
+
+// sorting
+
+	function sort_bp_flower_results(a, b){
+		if(typeof a[0] === "string"){
+			return -1;
+		}else{
+			a = a[0].color;
+		}
+		if(typeof b[0] === "string"){
+			return 1;
+		}else{
+			b = b[0].color;
+		}
+
+		if(a < b){
+			return -1;
+		}else if(a > b){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	function sort_bp_genepair_results(a, b){
+		if(typeof a[0] === "string"){
+			return -1;
+		}
+		else if(typeof b[0] === "string"){
+			return 1;
+		}
+
+		if(a[0].gene1.dominance == b[0].gene1.dominance){
+			return a[0].gene1.id - b[0].gene1.id;
+		}else{
+			return a[0].gene1.dominance - b[0].gene1.dominance;
+		}
+	}
+
+	function sort_breedpair_list(a, b){
+		var	g1d = a.pair1.gene1.dominance;
+		var	g2d = b.pair1.gene1.dominance;
+		if(g1d === g2d){
+			g1d = a.pair2.gene1.dominance;
+			g2d = b.pair2.gene1.dominance;
+		}else{
+			return g1d - g2d;
+		}
+	}
+
+// rendering
+
+	function renderGene(g){
+		return `<span class="gene `+g.color+`">`+g.color+`</span>`;
+	}
+
+	function renderGenepair(gp){
+		return `<div class="genepair `+gp.plant+` `+gp.color+`" data-depth="`+gp.depth+`">`+renderGene(gp.gene1)+renderGene(gp.gene2)+`</div>`;
+	}
+
+	function formatChance(chance){
+		return (Math.round(chance*10000)/100)+`%`;
+	}
+
+	function renderBreedpairRow(bp){
+		var results = new Map();
+
+		for(let [flower, color_chance] of [...bp.flower_results].sort(sort_bp_flower_results)){
+			if(typeof flower === "string"){
+				results.set(flower, {
+					sub_results: new Map(),
+					chance: color_chance
+				});
+			}
+			else{
+				results.set(flower.color, {
+					sub_results: new Map(),
+					chance: color_chance
+				});
+			}
+		}
+
+		for(let [genepair, pair_chance] of [...bp.genepair_results].sort(sort_bp_genepair_results)){
+			if(typeof genepair !== "string"){
+				results.get(genepair.flower.color).sub_results.set(
+					genepair,
+					[ pair_chance/results.get(genepair.flower.color).chance,
+					pair_chance ]
+				);
+			}
+		}
+
+		var output = `<article class="resultrow"><header class="parentgenes">`+renderGenepair(bp.pair1)+renderGenepair(bp.pair2)+`</header><section class="resultlist">`;
+
+		for(let [color, robj] of results){
+			var chance = formatChance(robj.chance);
+			output += `<section class="result_color `+color+`" style="--width:`+chance+`" data-percent="`+chance+`">`;
+			for(let [genepair, sub_chance] of robj.sub_results){
+				var subchancecss = formatChance(sub_chance[0]);
+				var subchancetext = formatChance(sub_chance[1]);
+				output += `<section class="result_genepair" style="--width:`+subchancecss+`">`+renderGenepair(genepair)+`<span class="chancetext `+genepair.gene2.color+`" data-percent="`+subchancetext+`">`+subchancetext+`</span></section>`;
+			}
+			output += `<span class="chancetext">`+chance+`</span></section>`;
+		}
+
+		output += `</section></article>`;
+
+		return output;
+	}
+
+	function loadResults(){
+		if(activeplant == "-"){
+			document.getElementById("breedpair_results").innerHTML = "";
+			return;
+		}
+
+		var output = "";
+
+		var limit = 100;
+		var count = 0;
+
+
+
+		var filtered_list = new Set();
+		for(let bp of [...DB[activeplant].breedpair].sort(sort_breedpair_list)){
+			if(
+				(filter.require_clean === false || bp.clean_results === true) &&
+				(filter.require_color === false || bp.flower_results.has(flower(filter.require_color))) &&
+				(bp.pair1.depth <= filter.max_depth || bp.pair2.depth <= filter.max_depth) &&
+				(filter.allowed_parent.size == 0 || filter.allowed_parent.has(bp.pair1) || filter.allowed_parent.has(bp.pair2)) &&
+				bp.flower_results.size >= (filter.min_different_color_results+1)
+			){
+				filtered_list.add(bp);
+			}
+		}
+		for(let bp of [...filtered_list]/*.sort(function(a,b){return b.flower_results.get(flower(filter.sort_color)) - a.flower_results.get(flower(filter.sort_color));})*/){
+			count++;
+			if(count <= limit){
+				output += renderBreedpairRow(bp);
+			}
+		}
+		document.getElementById("breedpair_results").innerHTML = output;
+	}
+//
+	
+	var filter = {
+		allowed_parent:new Set(/*[genepair("orange","blue"),genepair("yellow","blue"),genepair("white","blue"),genepair("red","blue")]*/),
+		max_depth:2,
+		min_different_color_results:3,
+		require_clean:false,
+		require_color:false,
+		sort_color:"red-blue"
+	};
+
+	for(let plant in DB){
+		document.getElementById("plant_select").innerHTML += `<option value="`+plant+`">`+plant+`</option>`;
+	}
+
+	document.getElementById("plant_select").addEventListener("input",function(e){
+		activeplant = this.value;
+		loadResults();
+	});
+</script>
+
+<style>
+
+.red{color:#CB172D;}
+.orange{color:#F6670F;}
+.yellow{color:#F4DB21;}
+.coral{color:#F1916F;}
+.pink{color:#FF78B3;}
+.purple{color:#8338B6;}
+.blue{color:#1364D8;}
+.white{color:#E0DCDB;}
+.black{color:#61282D;}
+
+.red{color:#E53935;}
+.orange{color:#FF9800;}
+.yellow{color:#FFEB3B;}
+.coral{color:#FF7043;}
+.pink{color:#F06292;}
+.purple{color:#9C27B0;}
+.blue{color:#2196F3;}
+.white{color:#EEEEEE;}
+.black{color:#795548;}
+
+.result_color.yellow-blue .result_genepair{
+	background:linear-gradient(0deg,#FFEB3B 0%,#2196F3 100%);
+	box-shadow:none!important;
+}
+.result_color.red-blue .result_genepair{
+	background:linear-gradient(0deg,#E53935 0%,#2196F3 100%);
+	box-shadow:none!important;
+}
+
+.resultrow{
+	width:100%;
+	height:70px;
+	display:flex;
+	flex-direction:row;
+	margin-bottom:30px;
+}
+.parentgenes{
+	border-radius:10px;
+	width:150px;
+	flex-shrink:0;
+	position:relative;
+	margin-right:10px;
+}
+.parentgenes .genepair:first-child{
+	margin-top:-23px;
+	left:25%;
+}
+.parentgenes .genepair:last-child{
+	margin-top:-23px;
+	left:74%;
+}
+.resultlist{
+	width:100%;
+	display:flex;
+	flex-direction:row;
+	justify-content:space-between;
+}
+.result_color{
+	width:calc(var(--width) - 2px);
+	display:block;
+	border-radius:10px;
+	display:flex;
+	flex-direction:row;
+	margin-top:18px;
+	justify-content:space-between;
+	position:relative;
+}
+.result_color::before{
+	content:"";
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:#F8F6E1;
+	opacity:0.8;
+	border-radius:inherit;
+}
+
+.result_color.destroyed{
+	z-index:5;
+}
+
+.result_color.destroyed::before{
+	background-color:#CCC;
+	opacity:1;
+	z-index:2;
+}
+
+.result_color.destroyed::after{
+	content:"";
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:inherit;
+	border-radius:inherit;
+	opacity:0.5;
+	z-index:3;
+}
+
+.result_color .result_genepair:first-of-type{
+	border-top-left-radius:10px;
+	border-bottom-left-radius:10px;
+}
+.result_color .result_genepair:last-of-type{
+	border-top-right-radius:10px;
+	border-bottom-right-radius:10px;
+}
+
+.result_genepair{
+	z-index:2;
+	width:calc(var(--width));
+	display:block;
+	border:0px solid currentcolor;
+	background:currentcolor;
+	position:relative;
+	box-shadow:0 0 5px currentcolor inset;
+}
+.result_genepair::before{
+	content:"";
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:#F8F6E1;
+	opacity:0.2;
+	border-radius:inherit;
+}
+.chancetext{
+	display:none;
+}
+.result_color > .chancetext{
+	display:block;
+	position:absolute;
+	top:-18px;
+	left:0;
+	width:100%;
+	height:40px;
+	background:currentcolor;
+	text-align:center;
+	background:#ECE3CB;
+	font-family:'Source Sans Pro';
+	font-size:12px;
+	color:#555655;
+	border-radius:6px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-weight:bold;
+	box-sizing:border-box;
+	padding-bottom:24px;
+	z-index:0;
+}
+
+.result_genepair .chancetext{
+	display:block;
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:100%;
+	height:18px;
+	background:currentcolor;
+	box-sizing:border-box;
+	border-radius:inherit;
+	border-top-left-radius:0;
+	border-top-right-radius:0;
+	font-weight:bold;
+}
+.result_genepair .chancetext::before{
+	content:"";
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:#ECE3CB;
+	opacity:0.6;
+}
+
+.result_genepair .chancetext::after{
+	content:attr(data-percent);
+	color:#555655;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-family:'Source Sans Pro';
+	font-size:12px;
+	opacity:0.9;
+}
+
+.genepair{
+	position:absolute;
+	top:50%;
+	left:50%;
+	width:46px;
+	height:46px;
+	background:#FFF;
+	border-radius:100%;
+	margin-left:-22px;
+	margin-top:-28px;
+	box-sizing:border-box;
+	background-position:center center;
+	background-repeat:no-repeat;
+	background-size:32px;
+}
+.genepair::after{
+	content:attr(data-depth);
+	position:absolute;
+	left:50%;
+	bottom:-1px;
+	width:16px;
+	height:12px;
+	margin-left:-8px;
+	border-radius:100%;
+	background:#FFF;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-size:11px;
+	font-weight:bold;
+	font-family:'Source Sans Pro';
+	color:#555;
+	border-top-right-radius:0;
+	border-top-left-radius:0;
+}
+
+
+.gene{
+	position:absolute;
+	top:-1px;
+	height:calc(100% + 2px);
+	width:calc(50% + 1px);
+	box-sizing:border-box;
+	border:8px solid currentcolor;
+	font-size:0px;
+}
+.gene:first-child{
+	left:-1px;
+	border-right:none;
+	border-top-left-radius:100% 50%;
+	border-bottom-left-radius:100% 50%;
+}
+.gene:last-child{
+	left:calc(50%);
+	border-left:none;
+	border-top-right-radius:100% 50%;
+	border-bottom-right-radius:100% 50%;
+}
+
+body,html{
+	background:#F8F6E1;
+}
+.bprow{
+	width:100%;
+	display:flex;
+	flex-direction:row;
+	margin-top:2px;
+}
+.bprow .parent1, .bprow .parent2{
+	width:100px;
+	flex-shrink:0;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	position:relative;
+	background-color:currentcolor;
+}
+.results{
+	margin-left:10px;
+}
+.results, .result_colorgroup{
+	flex-grow:1;
+	width:100%;
+	border:0px solid currentcolor;
+	box-sizing:border-box;
+	display:flex;
+	flex-direction:row;
+	background: currentcolor;
+	position:relative;
+}
+.subresult_group{
+	flex-shrink:0;
+	flex-grow:0;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	border:1px solid currentcolor;
+	border-bottom-width:18px;
+	box-shadow:0 0 10px currentcolor inset;
+	box-sizing:border-box;
+	position:relative;
+	height:86px;
+	background:linear-gradient(0deg, #E9B79488 0px, #E9B79488 100px), linear-gradient(0deg, #0001 0px, #0001 100px);
+}
+/*
+.result_colorgroup.red, .parent1.red, .parent2.red{color:#C40824}
+.result_colorgroup.orange, .parent1.orange, .parent2.orange{color:#FF6D02}
+.result_colorgroup.yellow, .parent1.yellow, .parent2.yellow{color:#FBC501}
+
+.orange{color:#F64210!important}
+.red{color:#BE030E!important}
+.yellow{color:#EACF00!important}
+.black{color:#A5879D!important}
+.purple{color:#B92FB1!important}
+.white{color:#EFE7F6!important}
+.pink{color:#FFB2C4!important}
+.blue{color:#1F37D4!important}
+.coral{color:#FF8700!important}
+*/
+.result_colorgroup > .chance_text{
+	z-index:99;
+	position:absolute;
+	bottom:0px;
+	left:50%;
+	margin-left:-20px;
+	font-size:13px;
+	font-family:'Source Sans Pro', sans-serif;
+	width:40px;
+
+	height:18px;
+	font-weight:bold;
+	text-align:center;
+	border-radius:3px;
+	color:#000;
+}
+
+.result_colorgroup.destroyed > .chance_text{
+	color:#777;
+}
+
+.subresult_group > .chance_text{
+	z-index:99;
+	position:absolute;
+	top:50%;
+	left:50%;
+	font-size:13px;
+	font-family:'Source Sans Pro', sans-serif;
+	width:46px;
+	margin-left:-23px;
+	height:18px;
+	margin-top:10px;
+	font-weight:bold;
+	text-align:center;
+	border-radius:3px;
+	background:#FDDFAF;
+	color:#000;
+}
+
+.gpcard{
+	z-index:99;
+	margin:10px;
+	width:40px;
+	height:40px;
+	display:block;
+	background:#FDDFAF;
+	flex-shrink:0;
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin-left:-20px;
+	margin-top:-24px;
+	border-radius:100%;
+	box-sizing:border-box;
+	background-position:center center;
+	background-repeat:no-repeat;
+	background-size:32px;
+}
+
+
+.gpcard .gene{
+	position:absolute;
+	top:-6px;
+	left:-6px;
+	width:26px;
+	height:52px;
+	border:8px solid black;
+	box-sizing:border-box;
+	border-color:currentcolor;
+}
+.gpcard .gene:nth-child(1){
+	border-right:none;
+	border-top-left-radius:100% 50%;
+	border-bottom-left-radius:100% 50%;
+}
+.gpcard .gene:nth-child(2){
+	left:20px;
+	border-left:none;
+	border-top-right-radius:100% 50%;
+	border-bottom-right-radius:100% 50%;
+}
+*{
+	box-sizing:border-box;
+}
+.destroyed{
+	background:#000 url("data:image/png;base64,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") center center no-repeat;
+	background-size:30px;
+	position:relative;
+}
+
+
+.genepair.tulip.red{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/2/2f/Red_Tulips.png/120px-Red_Tulips.png?version=0ed45ca86c873a246b8b6c6c24f26032");}
+.genepair.tulip.orange{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/4a/Orange_Tulips.png/120px-Orange_Tulips.png?version=624ff9e47184f072ab58fbf8ca14adc1");}
+.genepair.tulip.yellow{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/2/26/Yellow_Tulips.png/120px-Yellow_Tulips.png?version=9fde53d520060c773c0919cb4a613d48");}
+.genepair.tulip.black{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c2/Black_Tulips.png/120px-Black_Tulips.png?version=f020265f13ca31fe9ab396d01e4968f8");}
+.genepair.tulip.blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c3/Blue_Tulips.png/120px-Blue_Tulips.png?version=58650195c6a18fcc1f1ab7619d3bfd1d");}
+.genepair.tulip.purple{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c7/Purple_Tulips.png/120px-Purple_Tulips.png?version=47bff8a715aacd6f1468f741a1934b58");}
+.genepair.tulip.white{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/e/e7/White_Tulips.png/120px-White_Tulips.png?version=de154a12fce99b819911c579f4871f56");}
+.genepair.tulip.pink{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/1/1f/Pink_Tulips.png/120px-Pink_Tulips.png?version=b1b9e39bde5b8ca77d04078072de1edb");}
+
+.genepair.pansy.blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/4d/Blue_Pansies.png/120px-Blue_Pansies.png?version=3a27cf646ce3acdc8f8f858b5e498ce1");}
+.genepair.pansy.coral{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/e/ea/Coral_Pansies.png/120px-Coral_Pansies.png?version=4b4ac0b8e83cdbd367854760ac0620e3");}
+.genepair.pansy.orange{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/3/30/Orange_Pansies.png/120px-Orange_Pansies.png?version=0db0f19639bc16c52a4bff1fae79e233");}
+.genepair.pansy.purple{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/6/66/Purple_Pansies.png/120px-Purple_Pansies.png?version=256f947be591e212eb541a1a3ca90adf");}
+.genepair.pansy.red{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/41/Red_Pansies.png/120px-Red_Pansies.png?version=4dec9204eac7197c028af8dd791b63ad");}
+.genepair.pansy.red-blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/7/74/Red-Blue_Pansies.png/120px-Red-Blue_Pansies.png?version=a08d2edc351fe16bafc51a4632406b8d");}
+.genepair.pansy.white{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/f/fd/White_Pansies.png/120px-White_Pansies.png?version=f560194900e912c51e585ee35df06460");}
+.genepair.pansy.yellow{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c4/Yellow_Pansies.png/120px-Yellow_Pansies.png?version=9fe708f15c93ec7d9808f00f616be21f");}
+.genepair.pansy.yellow-blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/a/ae/Yellow-Blue_Pansies.png/120px-Yellow-Blue_Pansies.png?version=2d539189f000ee448766b2bf29bbf20b");}
+</style>
+
+</body>
+</html>
