@@ -131,7 +131,8 @@ body,html{
 .quarry_reward.natural_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_ntl00.png")}
 .quarry_reward.sporty_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_spt00.png")}
 .quarry_reward.rustic_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_cnt00.png")}
-
+.quarry_reward.hip_essence::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_pop00.png")}
+	    
 .quarry_reward.wood::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_key00.png")}
 .quarry_reward.steel::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_katikati00.png")}
 .quarry_reward.cotton::before{background-image:url("https://akrk-acpc.github.io/common_assets/material_huwahuwa00.png")}
@@ -255,6 +256,10 @@ var weight = {
 		ordinary:45,
 		sparkles:15
 	},
+	promo_essence:{
+		ordinary:45*3,
+		sparkles:15
+	},
 	bells:{
 		ordinary:60,
 		sparkles:20
@@ -272,6 +277,7 @@ var reward_types = [
 	["natural_essence", weight.essence],
 	["sporty_essence", weight.essence],
 	["rustic_essence", weight.essence],
+	["hip_essence", weight.promo_essence],
 	["wood", weight.materials],
 	["steel", weight.materials],
 	["cotton", weight.materials],
