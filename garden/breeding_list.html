@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html> 
+<html>
 <head>
 <title>ACPC Flower Breeding Pair List/Search</title>
 </head>
@@ -11,7 +12,10 @@
 <label>Require clean results:<input type="checkbox" id="require_clean"></label>
 <label>Max depth:<select id="max_depth"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option></select></label>
 <label>Minimum different colors:<select id="min_diff_colors"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-<div id="breedpair_results" style="max-width:1000px"></div>
+<div id="breedpair_results"></div>
+
+
+
 
 
 <script>
@@ -1208,6 +1212,11 @@
 					}
 				}
 			}
+
+			this.pair1_color_refund_rate = (this.flower_results.has(this.pair1.color) ? this.flower_results.get(this.pair1.color) : 0);
+			this.pair1_genepair_refund_rate = (this.genepair_results.has(this.pair1) ? this.genepair_results.get(this.pair1) : 0);
+			this.pair2_color_refund_rate = (this.flower_results.has(this.pair2.color) ? this.flower_results.get(this.pair2.color) : 0);
+			this.pair2_genepair_refund_rate = (this.genepair_results.has(this.pair2) ? this.genepair_results.get(this.pair2) : 0);
 		}
 	}
 
@@ -1620,27 +1629,70 @@
 
 		var output = "";
 
-		var limit = 900;
+		var limit = 11100;
 		var count = 0;
 
 
 
 		var filtered_list = new Set();
-		for(let bp of [...DB[activeplant].breedpair].sort(sort_breedpair_list)){
+		for(let bp of [...DB[activeplant].breedpair]/*.sort(sort_breedpair_list)*/){
+			
+
 			if(
-				(filter.require_clean === false || bp.clean_results === true) &&
-				(filter.require_color === false || bp.flower_results.has(flower(filter.require_color))) &&
-				(bp.pair1.depth <= filter.max_depth || bp.pair2.depth <= filter.max_depth) &&
-				(filter.allowed_parent.size == 0 || filter.allowed_parent.has(bp.pair1) || filter.allowed_parent.has(bp.pair2)) &&
-				bp.flower_results.size >= (filter.min_different_color_results+1)
+		//	(filter.require_clean === false || bp.clean_results === true) &&
+		//		(filter.require_color === false || bp.flower_results.has(flower(filter.require_color))) &&
+				//(bp.pairs.indexOf(genepair("yellow","blue")) > -1 || bp.pairs.indexOf(genepair("red","blue")) > -1 || bp.pairs.indexOf(genepair("white","blue")) > -1 || bp.pairs.indexOf(genepair("orange","blue")) > -1) &&
+				(bp.pair1.depth <= filter.max_depth || bp.pair2.depth <= filter.max_depth)// &&
+		//		(filter.allowed_parent.size == 0 || filter.allowed_parent.has(bp.pair1) || filter.allowed_parent.has(bp.pair2)) &&
+		//		bp.flower_results.size >= (filter.min_different_color_results+1)
 			){
 				filtered_list.add(bp);
 			}
 		}
-		for(let bp of [...filtered_list]/*.sort(function(a,b){return b.flower_results.get(flower(filter.sort_color)) - a.flower_results.get(flower(filter.sort_color));})*/){
+		for(let bp of [...filtered_list].sort(
+			function(a,b){
+				va = 0;
+				vb = 0;
+				for(let [result, reschance] of a.flower_results){
+					if(typeof result === "string"){
+						va += reschance;
+					}else{
+						if(result.color === "red" || result.color === "yellow" || result.color === "blue"){
+						}
+							va += reschance;
+					}
+				}
+				for(let [result, reschance] of b.flower_results){
+					if(typeof result === "string"){
+						vb += reschance;
+					}else{
+						if(result.color === "red" || result.color === "yellow" || result.color === "blue"){
+							vb += reschance;
+						}
+					}
+				}
+
+				return va - vb;
+			}
+			)/*.sort(function(a,b){return b.flower_results.get(flower(filter.sort_color)) - a.flower_results.get(flower(filter.sort_color));})*/){
+
+			var vchance = 0;
+
+			for(let [result, reschance] of bp.flower_results){
+				if(typeof result === "string"){
+					vchance += reschance;
+				}else{
+					if(result.color === "red" || result.color === "yellow" || result.color === "blue"){
+						vchance += reschance;
+					}
+				}
+			}
+
 			count++;
 			if(count <= limit){
-				output += renderBreedpairRow(bp);
+				//if(vchance < 0.6){
+				//output += renderBreedpairRow(bp)+"<span style='color:red;display:block;position:relative;font-family:\"Source Sans Pro\";font-size:14px;font-weight:bold;top:-40px;left:50px;'>"+formatChance(vchance)+"</span>";
+				//}
 			}
 		}
 		document.getElementById("breedpair_results").innerHTML = output;
@@ -1812,7 +1864,7 @@
 	background:currentcolor;
 	text-align:center;
 	background:#ECE3CB;
-	font-family:'Source Sans Pro', sans-serif;
+	font-family:'Source Sans Pro';
 	font-size:12px;
 	color:#555655;
 	border-radius:6px;
@@ -1861,7 +1913,7 @@
 	display:flex;
 	align-items:center;
 	justify-content:center;
-	font-family:'Source Sans Pro', sans-serif;
+	font-family:'Source Sans Pro';
 	font-size:12px;
 	opacity:0.9;
 }
@@ -1896,7 +1948,7 @@
 	justify-content:center;
 	font-size:11px;
 	font-weight:bold;
-	font-family:'Source Sans Pro', sans-serif;
+	font-family:'Source Sans Pro';
 	color:#555;
 	border-top-right-radius:0;
 	border-top-left-radius:0;
