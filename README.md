@@ -17,6 +17,8 @@
 ---
 ### Misc
 
+* [Software Recommendations for AC:PC](https://gist.github.com/AKRK-ACPC/dcde8fe845e2edb0b15adfb8879c4f3d)
+  - Other apps that can help you play the game (run multiple accounts, etc)
 * [Misc scripts & calculations](https://gist.github.com/AKRK-ACPC)
   - mostly stuff I've pasted in Discord, and the scripts I used to figure out the math for that stuff
 
