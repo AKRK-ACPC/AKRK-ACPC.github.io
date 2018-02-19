@@ -1,0 +1,282 @@
+body,html{
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	font-family:'Overlock', sans-serif;
+	font-weight:bold;
+	font-size:16px;
+	background:#0A5F65;
+	/*  font-family:'Julius Sans One', sans-serif;*/
+}
+body{
+	height:auto;
+	overflow-y:scroll;
+}
+
+#main_menu{
+	position:absolute;
+	top:0;
+	left:0;
+	height:36px;
+	width:100%;
+	box-sizing:border-box;
+
+	background:#57BBA7;
+}
+
+.screen_column{
+	width:800px;
+	position:absolute;
+	top:0px;
+	left:50%;
+	margin-left:-400px;
+}
+
+#return_link{
+	position:absolute;
+	top:7px;
+	left:5px;
+	font-size:17px;
+	color:#FAF7E6;
+	text-decoration:none;
+	box-sizing:border-box;
+	border-bottom:1px dashed currentcolor;
+}
+#upper_right_option{
+	position:absolute;
+	top:7px;
+	right:5px;
+	font-size:17px;
+	color:#FFCA4B;
+}
+
+#top_box{
+	margin-top:36px;
+	width:100%;
+	padding:10px;
+	box-sizing:border-box;
+	background:#F0E7CF;
+	position:relative;
+}
+
+#lower_box{
+	position:relative;
+}
+
+
+.parent_column{
+	width:100px;
+	display:inline-flex;
+	flex-shrink:0;
+	flex-grow:0;
+	flex-direction:row;
+}
+
+.parent_column .parent_1,
+.parent_column .parent_2{
+	display:flex;
+	width:50%;
+	align-items:center;
+	justify-content:center;
+	height:65px;
+}
+
+.bp_row{
+	display:flex;
+	flex-direction:row;
+}
+
+#search_option_main{
+	display:block;
+	width:100%;
+
+}
+
+#search_results{
+	margin-top:25px;
+}
+
+
+
+.bp_row .parent_column{
+	height:64px;
+	width:95px;
+}
+.bp_result_list{
+	width:calc(100% - 100px);
+	display:inline-flex;
+	flex-direction:row;
+}
+.color_result_bar{
+	border-radius:5px;
+	background:#FFF;
+	margin:2px;
+	overflow:hidden;
+	height:60px;
+	display:flex;
+	flex-direction:column;
+}
+.color_result_bar_label{
+	width:100%;
+	height:18px;
+	background:#ECE3CB;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+}
+.genepair_result_bar_label{
+	background:currentcolor;
+	width:100%;
+	height:18px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	border-radius:0!important;
+	z-index:9999;
+	position:relative;
+	left:0!important;
+}
+.genepair_result_bar{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-end;
+	position:relative;
+	flex-shrink:0;
+}
+.genepair_result_bar_label::before{
+	content:"";
+	background:#ECE3CB;
+	opacity:0.6;
+	width:100%;
+	height:100%;
+	flex-shrink:1;
+	position:absolute;
+	top:0;
+	left:0;
+}
+.color_result_bar_genepair_wrapper::before{
+	content:"";
+	background:#F8F6E1;
+	opacity:0.2;
+	width:100%;
+	height:100%;
+	flex-shrink:1;
+	position:absolute;
+	top:0;
+	left:0;
+}
+.genepair_result_bar .genepair{
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin-left:-16px;
+	margin-top:-24px;
+}
+.color_result_bar_genepair_wrapper{
+	display:flex;
+	flex-direction:row;
+	flex-grow:1;
+	position:relative;
+}
+
+.percent_text{
+	font-family:"Overpass", sans-serif;
+	color:#555655;
+	font-size:12px;
+	z-index:9999;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	line-height:10px;
+}
+
+.destroyed .genepair,
+.destroyed .genepair_result_bar_label{
+	display:none;
+}
+
+.flower_group .genepair{
+	width:20px;
+	height:20px;
+	transform:rotate(45deg);
+}
+.flower_group .genepair .gene{
+	border-width:11px;
+	box-shadow:0 0 0 1px currentcolor;
+}
+
+.flower_group{
+	width:calc(100% - 100px);
+	display:inline-block;
+}
+.flower_group_child{
+	margin:3px;
+	flex-shrink:1;
+	opacity:0.66;
+}
+.flower_table.filter_enabled .flower_group_child{
+	opacity:0.25;
+}
+.flower_table.filter_enabled .flower_group_child.active_filter{
+	opacity:1;
+	border-radius:100%;
+	box-shadow:0px 0px 0 4px #F0E7CF;
+}
+
+.genepair{
+	width:32px;
+	height:32px;
+	border-radius:100%;
+	background:#FFF;
+	display:block;
+	position:relative;
+	box-sizing:border-box;
+}
+.genepair .gene{
+	height:calc(100% + 2px);
+	width:calc(50% + 1px);
+	position:absolute;
+	top:-1px;
+	left:0px;
+	box-sizing:border-box;
+	border:6px solid currentcolor;
+	font-size:0px;
+
+}
+.gene:first-child{
+	left:-1px;
+	border-right:none;
+	border-top-left-radius:100% 50%;
+	border-bottom-left-radius:100% 50%;
+
+}
+.gene:last-child{
+	left:calc(50%);
+	border-left:none;
+	border-top-right-radius:100% 50%;
+	border-bottom-right-radius:100% 50%;
+
+}
+
+.flower_table{
+	display:inline-flex;
+	flex-direction:row;
+	width:100%;
+}
+.flower_group_children{
+	min-width:65px;
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+	justify-content:center;
+	background:#57BBA7;
+	height:100%;
+	align-items:flex-start;
+	align-content:flex-start;
+
+}
+.flower_group_child{
+
+}
