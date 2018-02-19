@@ -1,0 +1,50 @@
+.gene.red{color:#E53935;}
+.gene.orange{color:#FF9800;}
+.gene.yellow{color:#FFEB3B;}
+.gene.coral{color:#FF7043;}
+.gene.pink{color:#F06292;}
+.gene.purple{color:#9C27B0;}
+.gene.blue{color:#2196F3;}
+.gene.white{color:#EEEEEE;}
+.gene.black{color:#795548;}
+
+.flower.red{background:#E53935;}
+.flower.orange{background:#FF9800;}
+.flower.yellow{background:#FFEB3B;}
+.flower.coral{background:#FF7043;}
+.flower.pink{background:#F06292;}
+.flower.purple{background:#9C27B0;}
+.flower.blue{background:#2196F3;}
+.flower.white{background:#EEEEEE;}
+.flower.black{background:#795548;}
+.flower.yellow-blue{background:linear-gradient(0deg,#FFEB3B 0%,#2196F3 100%);}
+.flower.red-blue{background:linear-gradient(0deg,#E53935 0%,#2196F3 100%);}
+
+
+.destroyed{background:#666666}
+
+.genepair{
+	background-position:center center;
+	background-repeat:no-repeat;
+	background-size:24px;
+}
+
+
+.genepair.tulip.red{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/2/2f/Red_Tulips.png/120px-Red_Tulips.png?version=0ed45ca86c873a246b8b6c6c24f26032");}
+.genepair.tulip.orange{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/4a/Orange_Tulips.png/120px-Orange_Tulips.png?version=624ff9e47184f072ab58fbf8ca14adc1");}
+.genepair.tulip.yellow{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/2/26/Yellow_Tulips.png/120px-Yellow_Tulips.png?version=9fde53d520060c773c0919cb4a613d48");}
+.genepair.tulip.black{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c2/Black_Tulips.png/120px-Black_Tulips.png?version=f020265f13ca31fe9ab396d01e4968f8");}
+.genepair.tulip.blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c3/Blue_Tulips.png/120px-Blue_Tulips.png?version=58650195c6a18fcc1f1ab7619d3bfd1d");}
+.genepair.tulip.purple{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c7/Purple_Tulips.png/120px-Purple_Tulips.png?version=47bff8a715aacd6f1468f741a1934b58");}
+.genepair.tulip.white{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/e/e7/White_Tulips.png/120px-White_Tulips.png?version=de154a12fce99b819911c579f4871f56");}
+.genepair.tulip.pink{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/1/1f/Pink_Tulips.png/120px-Pink_Tulips.png?version=b1b9e39bde5b8ca77d04078072de1edb");}
+
+.genepair.pansy.blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/4d/Blue_Pansies.png/120px-Blue_Pansies.png?version=3a27cf646ce3acdc8f8f858b5e498ce1");}
+.genepair.pansy.coral{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/e/ea/Coral_Pansies.png/120px-Coral_Pansies.png?version=4b4ac0b8e83cdbd367854760ac0620e3");}
+.genepair.pansy.orange{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/3/30/Orange_Pansies.png/120px-Orange_Pansies.png?version=0db0f19639bc16c52a4bff1fae79e233");}
+.genepair.pansy.purple{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/6/66/Purple_Pansies.png/120px-Purple_Pansies.png?version=256f947be591e212eb541a1a3ca90adf");}
+.genepair.pansy.red{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/4/41/Red_Pansies.png/120px-Red_Pansies.png?version=4dec9204eac7197c028af8dd791b63ad");}
+.genepair.pansy.red-blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/7/74/Red-Blue_Pansies.png/120px-Red-Blue_Pansies.png?version=a08d2edc351fe16bafc51a4632406b8d");}
+.genepair.pansy.white{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/f/fd/White_Pansies.png/120px-White_Pansies.png?version=f560194900e912c51e585ee35df06460");}
+.genepair.pansy.yellow{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/c/c4/Yellow_Pansies.png/120px-Yellow_Pansies.png?version=9fe708f15c93ec7d9808f00f616be21f");}
+.genepair.pansy.yellow-blue{background-image:url("https://d1u5p3l4wpay3k.cloudfront.net/animalcrossingpocketcamp_gamepedia_en/thumb/a/ae/Yellow-Blue_Pansies.png/120px-Yellow-Blue_Pansies.png?version=2d539189f000ee448766b2bf29bbf20b");}
